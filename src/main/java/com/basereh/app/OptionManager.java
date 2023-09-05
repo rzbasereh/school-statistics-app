@@ -6,8 +6,8 @@ public class OptionManager {
 
     private void printOptions() {
         System.out.println("\nPlease select one of these options:");
-        System.out.println("\t[1] Parse CSV formated string");
-        System.out.println("\t[2] Parse CSV formated string (Typed by Enter)");
+        System.out.println("\t[1] Parse CSV formatted string");
+        System.out.println("\t[2] Parse CSV formatted string (Typed by Enter)");
     }
 
     private void printCSV(String[][] parsedRows) {
@@ -40,7 +40,7 @@ public class OptionManager {
     }
 
     private void CSVLineParserOption(Scanner scanner) {
-        System.out.print("enter number of rows: ");
+        System.out.print("Enter number of rows: ");
         int rowLength = scanner.nextInt();
         String[] lines = new String[rowLength];
         for (int i = 0; i < rowLength; i++) {
