@@ -2,29 +2,9 @@ package com.basereh.app;
 
 import java.lang.String;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class CSVManager {
-
-//    public static String read() {
-//        Scanner scanner = new Scanner(System.in);
-//        String result = scanner.next();
-//        scanner.close();
-//        return result;
-//    }
-
-//    public String[] readLineByLine() {
-//        System.out.println("press ESC key to finish");
-//        Scanner scanner = new Scanner(System.in);
-//        ArrayList<String> result = new ArrayList<>();
-//        while (scanner.hasNext()) {
-//            result.add(scanner.next());
-//        }
-//        scanner.close();
-//        return result.toArray(String[]::new);
-//    }
 
     public static String[][] parser(String formatedString) {
         String[] parsedLines = formatedString.split(";");
