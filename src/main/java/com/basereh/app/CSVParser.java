@@ -1,14 +1,16 @@
 package com.basereh.app;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.String;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class CSVParser {
 
     public List<String> parseLine(String line) {
-       return Arrays.asList(line.split(","));
+        return Arrays.asList(line.split(","));
     }
 
     public List<String> splitRows(String formatedString) {
@@ -26,7 +28,7 @@ public class CSVParser {
                 csv.setHeaders(parsedLine);
             } else {
                 if (parsedLine.size() != columnLength) {
-                    throw new IOException("Invalid CSV file");
+                    throw new IOException("Invalid CSV format");
                 }
                 csv.addRow(parsedLine);
             }
@@ -37,5 +39,15 @@ public class CSVParser {
     public CSV parse(String formatedString) throws IOException {
         List<String> splitRows = splitRows(formatedString);
         return parse(splitRows);
+    }
+
+    public CSV parseFile(String filePath) throws IOException {
+        try (Scanner scanner = new Scanner(new File(filePath))) {
+            List<String> lines = new ArrayList<>();
+            while (scanner.hasNextLine()) {
+                lines.add(scanner.nextLine());
+            }
+            return parse(lines);
+        }
     }
 }

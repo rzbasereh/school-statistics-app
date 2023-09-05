@@ -21,6 +21,7 @@ public class CLI {
         System.out.println("\nPlease select one of these options:");
         System.out.println("\t[1] Parse CSV formatted string");
         System.out.println("\t[2] Parse CSV formatted string (Typed by Enter)");
+        System.out.println("\t[3] School statistics");
     }
 
     private void CSVParserOption(Scanner scanner) {
@@ -51,7 +52,7 @@ public class CLI {
     }
 
     private boolean isContinue(Scanner scanner) {
-        System.out.print("Are you want to continue (Y/n): ");
+        System.out.print("\nAre you want to continue (Y/n): ");
         String res = scanner.next();
         return !res.equals("n");
     }
@@ -72,7 +73,6 @@ public class CLI {
                     break;
                 default:
                     System.out.println("Invalid option!");
-
             }
         } while (isContinue(scanner));
         scanner.close();
