@@ -14,7 +14,7 @@ public class CSVParser {
         return Arrays.asList(line.split(","));
     }
 
-    public List<String> splitRows(String formatedString) {
+    public List<String> extractRows(String formatedString) {
         return Arrays.asList(formatedString.split(";"));
     }
 
@@ -29,13 +29,13 @@ public class CSVParser {
     }
 
     public CSV parse(String formatedString) throws IOException {
-        List<String> splitRows = splitRows(formatedString);
-        return parse(splitRows);
+        List<String> records = extractRows(formatedString);
+        return parse(records);
     }
 
     public CSV parseFile(String filePath) throws IOException {
-        try (Stream<String> lines = Files.lines(Path.of(filePath))) {
-            return parse(lines.toList());
+        try (Stream<String> records = Files.lines(Path.of(filePath))) {
+            return parse(records.toList());
         }
     }
 }

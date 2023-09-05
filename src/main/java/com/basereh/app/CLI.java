@@ -51,6 +51,18 @@ public class CLI {
         }
     }
 
+    private void calculateSchoolStatistics(Scanner scanner) {
+        System.out.print("Enter your file path: ");
+        String filePath = scanner.next();
+
+        try {
+            CSV csv = csvParser.parseFile(filePath);
+            System.out.println(csv);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private boolean isContinue(Scanner scanner) {
         System.out.print("\nAre you want to continue (Y/n): ");
         String res = scanner.next();
@@ -59,6 +71,7 @@ public class CLI {
 
     public void run() {
         Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+
         do {
             clear();
             printOptions();
@@ -71,10 +84,14 @@ public class CLI {
                 case 2:
                     CSVLineParserOption(scanner);
                     break;
+                case 3:
+                    calculateSchoolStatistics(scanner);
+                    break;
                 default:
                     System.out.println("Invalid option!");
             }
         } while (isContinue(scanner));
+
         scanner.close();
     }
 }
