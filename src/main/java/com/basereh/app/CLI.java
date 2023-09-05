@@ -1,5 +1,6 @@
 package com.basereh.app;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,6 +12,11 @@ public class CLI {
         this.csvParser = csvParser;
     }
 
+    private void clear() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
     private void printOptions() {
         System.out.println("\nPlease select one of these options:");
         System.out.println("\t[1] Parse CSV formatted string");
@@ -19,8 +25,12 @@ public class CLI {
 
     private void CSVParserOption(Scanner scanner) {
         String str = scanner.next();
-        CSV csv = csvParser.parse(str);
-        System.out.println(csv);
+        try {
+            CSV csv = csvParser.parse(str);
+            System.out.println(csv);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void CSVLineParserOption(Scanner scanner) {
@@ -32,8 +42,12 @@ public class CLI {
             lines.add(scanner.next());
         }
 
-        CSV csv = csvParser.parse(lines);
-        System.out.println(csv);
+        try {
+            CSV csv = csvParser.parse(lines);
+            System.out.println(csv);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private boolean isContinue(Scanner scanner) {
@@ -45,6 +59,7 @@ public class CLI {
     public void run() {
         Scanner scanner = new Scanner(System.in).useDelimiter("\n");
         do {
+            clear();
             printOptions();
 
             int selectedOption = scanner.nextInt();
