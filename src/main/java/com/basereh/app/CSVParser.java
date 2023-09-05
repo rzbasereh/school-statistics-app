@@ -2,10 +2,11 @@ package com.basereh.app;
 
 import java.io.*;
 import java.lang.String;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class CSVParser {
 
@@ -18,20 +19,11 @@ public class CSVParser {
     }
 
     public CSV parse(List<String> lines) throws IOException {
-        CSV csv = new CSV();
-        int columnLength = 0;
-        for (int i = 0; i < lines.size(); i++) {
-            List<String> parsedLine = parseLine(lines.get(i));
-
-            if (i == 0) {
-                columnLength = parsedLine.size();
-                csv.setHeaders(parsedLine);
-            } else {
-                if (parsedLine.size() != columnLength) {
-                    throw new IOException("Invalid CSV format");
-                }
-                csv.addRow(parsedLine);
-            }
+        List<String> header = parseLine(lines.remove(0));
+        CSV csv = new CSV(header);
+        for (var line : lines) {
+            List<String> parsedLine = parseLine(line);
+            csv.addRow(parsedLine);
         }
         return csv;
     }
@@ -42,12 +34,8 @@ public class CSVParser {
     }
 
     public CSV parseFile(String filePath) throws IOException {
-        try (Scanner scanner = new Scanner(new File(filePath))) {
-            List<String> lines = new ArrayList<>();
-            while (scanner.hasNextLine()) {
-                lines.add(scanner.nextLine());
-            }
-            return parse(lines);
+        try (Stream<String> lines = Files.lines(Path.of(filePath))) {
+            return parse(lines.toList());
         }
     }
 }
