@@ -1,5 +1,11 @@
 package com.basereh.app;
 
-public class StatisticsResult {
+import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
+
+@RequiredArgsConstructor
+public class StatisticsResult {
+    private final String name;
+    private final Map<String, Float> items;
 }
