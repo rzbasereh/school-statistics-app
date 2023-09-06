@@ -5,9 +5,9 @@ import java.util.List;
 public class Max implements StatisticMeasure {
 
     @Override
-    public float calculate(List<Integer> nums) {
+    public float calculate(List<Float> nums) {
         float max = 0;
-        for (int num: nums) {
+        for (float num: nums) {
             if (num > max) max = num;
         }
         return max;

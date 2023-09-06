@@ -5,9 +5,9 @@ import java.util.List;
 public class Min implements StatisticMeasure {
 
     @Override
-    public float calculate(List<Integer> nums) {
+    public float calculate(List<Float> nums) {
         float min = 0;
-        for (int num: nums) {
+        for (float num: nums) {
             if (num < min) min = num;
         }
         return min;
