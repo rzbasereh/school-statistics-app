@@ -1,16 +1,17 @@
 package com.basereh.app;
 
+import lombok.RequiredArgsConstructor;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+@RequiredArgsConstructor
 public class CLI {
     private final CSVParser csvParser;
 
-    public CLI(CSVParser csvParser) {
-        this.csvParser = csvParser;
-    }
+    private final Printer printer;
 
     private void clear() {
         System.out.print("\033[H\033[2J");
@@ -28,7 +29,7 @@ public class CLI {
         String str = scanner.next();
         try {
             CSV csv = csvParser.parse(str);
-            System.out.println(csv);
+            printer.print(csv);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -57,7 +58,9 @@ public class CLI {
 
         try {
             CSV csv = csvParser.parseFile(filePath);
-            System.out.println(csv);
+            StudentList studentList = new StudentList();
+            studentList.extractFromCSV(csv);
+            printer.print(csv);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
