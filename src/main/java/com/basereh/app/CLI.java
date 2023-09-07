@@ -52,7 +52,7 @@ public class CLI {
 
         try {
             CSV csv = csvParser.parse(lines);
-            System.out.println(csv);
+            printer.print(csv);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
