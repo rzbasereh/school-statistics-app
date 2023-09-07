@@ -3,10 +3,7 @@ package com.basereh.app;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class CLI {
@@ -21,12 +18,17 @@ public class CLI {
         System.out.flush();
     }
 
-    private void printOptions() {
-        System.out.println("\nPlease select one of these options:");
-        System.out.println("\t[1] Parse CSV formatted string");
-        System.out.println("\t[2] Parse CSV formatted string (Typed by Enter)");
-        System.out.println("\t[3] School statistics");
-        System.out.println("\t[4] School statistics (optional on statistic measurement method)");
+    private int selectOption(String title, List<String> options, Scanner scanner) throws Exception {
+        System.out.println("\n" + title);
+        for (int i = 0; i < options.size(); i++) {
+            System.out.println("\t[" + (i + 1) + "] " + options.get(i));
+        }
+
+        int selectedOptionIndex = scanner.nextInt() - 1;
+        if (selectedOptionIndex < 0 || selectedOptionIndex >= options.size()) {
+            throw new Exception("Invalid option selected!");
+        }
+        return selectedOptionIndex;
     }
 
     private void CSVParserOption(Scanner scanner) {
@@ -75,6 +77,55 @@ public class CLI {
         }
     }
 
+    private void calculateSchoolStatisticsByMeasurementMethod(Scanner scanner) throws Exception {
+        List<String> methods = statisticsFacade.getMeasurementMethods().stream().map(Class::getSimpleName).toList();
+        int selectedMethodIndex = selectOption("Please choose one of this methods:", methods, scanner);
+        String selectedMethod = methods.get(selectedMethodIndex);
+
+        List<String> headers = Arrays.asList("name", "school", "grade", "className", "score");
+        try {
+            CSV csv = new CSV(headers);
+            csv.addRow(Arrays.asList("ali", "sch", "G1", "C1", "10"));
+            csv.addRow(Arrays.asList("akbar", "sch", "G2", "C1", "20"));
+
+            StudentList studentList = new StudentList();
+            studentList.extractFromCSV(csv);
+            List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(studentList, selectedMethod);
+            printer.print(results);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void calculateSchoolStatisticsByMeasurementMethodAndStatisticTarget(Scanner scanner) throws Exception {
+        List<String> methods = statisticsFacade.getMeasurementMethods().stream().map(Class::getSimpleName).toList();
+        int selectedMethodIndex = selectOption("Please choose one of this methods:", methods, scanner);
+
+        List<StatisticTarget> statisticTargets = statisticsFacade.getStatisticTargets();
+        int selectedTargetIndex = selectOption("Please choose one of this targets:", statisticTargets.stream().map(StatisticTarget::name).toList(), scanner);
+
+        String selectedMethod = methods.get(selectedMethodIndex);
+        StatisticTarget selectedTarget = statisticTargets.get(selectedTargetIndex);
+
+        List<String> headers = Arrays.asList("name", "school", "grade", "className", "score");
+        try {
+            CSV csv = new CSV(headers);
+            csv.addRow(Arrays.asList("ali", "sch", "G1", "C1", "10"));
+            csv.addRow(Arrays.asList("akbar", "sch", "G2", "C1", "20"));
+
+            StudentList studentList = new StudentList();
+            studentList.extractFromCSV(csv);
+            List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
+                    studentList,
+                    Collections.singletonList(selectedMethod),
+                    selectedTarget
+            );
+            printer.print(results);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private boolean isContinue(Scanner scanner) {
         System.out.print("\nAre you want to continue (Y/n): ");
         String res = scanner.next();
@@ -83,27 +134,26 @@ public class CLI {
 
     public void run() {
         Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+        List<String> options = Arrays.asList(
+                "Parse CSV formatted string",
+                "Parse CSV formatted string (Typed by Enter)",
+                "School statistics",
+                "School statistics (choose a statistic measurement method)",
+                "School statistics (choose a statistic measurement method and type of statistic target)"
+        );
 
         do {
             clear();
-            printOptions();
-
-            int selectedOption = scanner.nextInt();
-            switch (selectedOption) {
-                case 1:
-                    CSVParserOption(scanner);
-                    break;
-                case 2:
-                    CSVLineParserOption(scanner);
-                    break;
-                case 3:
-                    calculateSchoolStatistics(scanner);
-                    break;
-                case 4:
-                    calculateSchoolStatistics(scanner);
-                    break;
-                default:
-                    System.out.println("Invalid option!");
+            try {
+                switch (selectOption("Please select one of these options:", options, scanner)) {
+                    case 0 -> CSVParserOption(scanner);
+                    case 1 -> CSVLineParserOption(scanner);
+                    case 2 -> calculateSchoolStatistics(scanner);
+                    case 3 -> calculateSchoolStatisticsByMeasurementMethod(scanner);
+                    case 4 -> calculateSchoolStatisticsByMeasurementMethodAndStatisticTarget(scanner);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         } while (isContinue(scanner));
 
