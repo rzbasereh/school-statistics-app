@@ -6,7 +6,7 @@ public class Max implements StatisticMeasure {
 
     @Override
     public float calculate(List<Float> nums) {
-        float max = 0;
+        float max = nums.get(0);
         for (float num: nums) {
             if (num > max) max = num;
         }
