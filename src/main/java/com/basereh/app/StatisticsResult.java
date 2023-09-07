@@ -1,11 +1,14 @@
 package com.basereh.app;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
+import java.util.List;
 
 @RequiredArgsConstructor
+@Getter
 public class StatisticsResult {
     private final String name;
-    private final Map<String, Float> items;
+    private final StatisticTarget target;
+    private final List<StatisticsMeasureResult> measures;
 }
