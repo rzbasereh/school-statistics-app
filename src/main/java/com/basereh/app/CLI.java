@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
 public class CLI {
     private final CSVParser csvParser;
+
+    private final StatisticsFacade statisticsFacade;
 
     private final Printer printer;
 
@@ -23,6 +26,7 @@ public class CLI {
         System.out.println("\t[1] Parse CSV formatted string");
         System.out.println("\t[2] Parse CSV formatted string (Typed by Enter)");
         System.out.println("\t[3] School statistics");
+        System.out.println("\t[4] School statistics (optional on statistic measurement method)");
     }
 
     private void CSVParserOption(Scanner scanner) {
@@ -53,14 +57,19 @@ public class CLI {
     }
 
     private void calculateSchoolStatistics(Scanner scanner) {
-        System.out.print("Enter your file path: ");
-        String filePath = scanner.next();
-
+//        System.out.print("Enter your file path: ");
+//        String filePath = scanner.next();
+        List<String> headers = Arrays.asList("name", "school", "grade", "className", "score");
         try {
-            CSV csv = csvParser.parseFile(filePath);
+//            CSV csv = csvParser.parseFile(filePath);
+            CSV csv = new CSV(headers);
+            csv.addRow(Arrays.asList("ali", "sch", "G1", "C1", "10"));
+            csv.addRow(Arrays.asList("akbar", "sch", "G2", "C1", "20"));
+
             StudentList studentList = new StudentList();
             studentList.extractFromCSV(csv);
-            printer.print(csv);
+            List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(studentList);
+            printer.print(results);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -88,6 +97,9 @@ public class CLI {
                     CSVLineParserOption(scanner);
                     break;
                 case 3:
+                    calculateSchoolStatistics(scanner);
+                    break;
+                case 4:
                     calculateSchoolStatistics(scanner);
                     break;
                 default:
