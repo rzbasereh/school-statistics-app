@@ -5,6 +5,7 @@ import java.lang.String;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -19,11 +20,12 @@ public class CSVParser {
     }
 
     public CSV parse(List<String> lines) throws IOException {
-        List<String> header = parseLine(lines.remove(0));
+        Iterator<String> iterator = lines.iterator();
+        List<String> header = parseLine(iterator.next());
         CSV csv = new CSV(header);
-        for (var line : lines) {
-            List<String> parsedLine = parseLine(line);
-            csv.addRow(parsedLine);
+        while (iterator.hasNext()) {
+            var line = iterator.next();
+            csv.addRow(parseLine(line));
         }
         return csv;
     }

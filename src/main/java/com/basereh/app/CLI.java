@@ -18,7 +18,7 @@ public class CLI {
         System.out.flush();
     }
 
-    private int selectOption(String title, List<String> options, Scanner scanner) throws Exception {
+    private int selectOption(Scanner scanner, String title, List<String> options) throws Exception {
         System.out.println("\n" + title);
         for (int i = 0; i < options.size(); i++) {
             System.out.println("\t[" + (i + 1) + "] " + options.get(i));
@@ -58,72 +58,65 @@ public class CLI {
         }
     }
 
-    private void calculateSchoolStatistics(Scanner scanner) {
-//        System.out.print("Enter your file path: ");
-//        String filePath = scanner.next();
-        List<String> headers = Arrays.asList("name", "school", "grade", "className", "score");
+    private StudentList getStudentListFromFile(Scanner scanner) {
+        System.out.print("Enter your file path: ");
+        String filePath = scanner.next();
+        StudentList studentList = new StudentList();
         try {
-//            CSV csv = csvParser.parseFile(filePath);
-            CSV csv = new CSV(headers);
-            csv.addRow(Arrays.asList("ali", "sch", "G1", "C1", "10"));
-            csv.addRow(Arrays.asList("akbar", "sch", "G2", "C1", "20"));
-
-            StudentList studentList = new StudentList();
+            CSV csv = csvParser.parseFile(filePath);
             studentList.extractFromCSV(csv);
-            List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(studentList);
-            printer.print(results);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        return studentList;
     }
 
-    private void calculateSchoolStatisticsByMeasurementMethod(Scanner scanner) throws Exception {
-        List<String> methods = statisticsFacade.getMeasurementMethods().stream().map(Class::getSimpleName).toList();
-        int selectedMethodIndex = selectOption("Please choose one of this methods:", methods, scanner);
-        String selectedMethod = methods.get(selectedMethodIndex);
-
-        List<String> headers = Arrays.asList("name", "school", "grade", "className", "score");
-        try {
-            CSV csv = new CSV(headers);
-            csv.addRow(Arrays.asList("ali", "sch", "G1", "C1", "10"));
-            csv.addRow(Arrays.asList("akbar", "sch", "G2", "C1", "20"));
-
-            StudentList studentList = new StudentList();
-            studentList.extractFromCSV(csv);
-            List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(studentList, selectedMethod);
-            printer.print(results);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+    private void calculateSchoolStatisticsOption(Scanner scanner) {
+        StudentList studentList = getStudentListFromFile(scanner);
+        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(studentList);
+        printer.print(results);
     }
 
-    private void calculateSchoolStatisticsByMeasurementMethodAndStatisticTarget(Scanner scanner) throws Exception {
-        List<String> methods = statisticsFacade.getMeasurementMethods().stream().map(Class::getSimpleName).toList();
-        int selectedMethodIndex = selectOption("Please choose one of this methods:", methods, scanner);
+    private void calculateSchoolStatisticsByMeasurementMethodOption(Scanner scanner) throws Exception {
+        StudentList studentList = getStudentListFromFile(scanner);
 
-        List<StatisticTarget> statisticTargets = statisticsFacade.getStatisticTargets();
-        int selectedTargetIndex = selectOption("Please choose one of this targets:", statisticTargets.stream().map(StatisticTarget::name).toList(), scanner);
+        List<Class<? extends StatisticCalculator>> methods = statisticsFacade.getMeasurementMethods();
+        int selectedMethodIndex = selectOption(
+                scanner,
+                "Please choose one of this methods:",
+                methods.stream().map(Class::getName).toList()
+        );
 
-        String selectedMethod = methods.get(selectedMethodIndex);
-        StatisticTarget selectedTarget = statisticTargets.get(selectedTargetIndex);
+        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
+                studentList,
+                methods.get(selectedMethodIndex)
+        );
+        printer.print(results);
+    }
 
-        List<String> headers = Arrays.asList("name", "school", "grade", "className", "score");
-        try {
-            CSV csv = new CSV(headers);
-            csv.addRow(Arrays.asList("ali", "sch", "G1", "C1", "10"));
-            csv.addRow(Arrays.asList("akbar", "sch", "G2", "C1", "20"));
+    private void calculateSchoolStatisticsByMeasurementMethodAndStatisticTargetOption(Scanner scanner) throws Exception {
+        StudentList studentList = getStudentListFromFile(scanner);
 
-            StudentList studentList = new StudentList();
-            studentList.extractFromCSV(csv);
-            List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
-                    studentList,
-                    Collections.singletonList(selectedMethod),
-                    selectedTarget
-            );
-            printer.print(results);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        List<Class<? extends StatisticCalculator>> methods = statisticsFacade.getMeasurementMethods();
+        int selectedMethodIndex = selectOption(
+                scanner,
+                "Please choose one of this methods:",
+                methods.stream().map(Class::getName).toList()
+        );
+
+        List<Class<? extends ScoreCollector>> scoreCollectors = statisticsFacade.getScoreCollectors();
+        int selectedTargetIndex = selectOption(
+                scanner,
+                "Please choose one of this targets:",
+                scoreCollectors.stream().map(Class::getName).toList()
+        );
+
+        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
+                studentList,
+                Collections.singletonList(methods.get(selectedMethodIndex)),
+                Collections.singletonList(scoreCollectors.get(selectedTargetIndex))
+        );
+        printer.print(results);
     }
 
     private boolean isContinue(Scanner scanner) {
@@ -145,12 +138,12 @@ public class CLI {
         do {
             clear();
             try {
-                switch (selectOption("Please select one of these options:", options, scanner)) {
+                switch (selectOption(scanner,"Please select one of these options:", options)) {
                     case 0 -> CSVParserOption(scanner);
                     case 1 -> CSVLineParserOption(scanner);
-                    case 2 -> calculateSchoolStatistics(scanner);
-                    case 3 -> calculateSchoolStatisticsByMeasurementMethod(scanner);
-                    case 4 -> calculateSchoolStatisticsByMeasurementMethodAndStatisticTarget(scanner);
+                    case 2 -> calculateSchoolStatisticsOption(scanner);
+                    case 3 -> calculateSchoolStatisticsByMeasurementMethodOption(scanner);
+                    case 4 -> calculateSchoolStatisticsByMeasurementMethodAndStatisticTargetOption(scanner);
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
