@@ -14,6 +14,14 @@ public class StatisticsFacade {
         return reflections.getSubTypesOf(interfaceClass).stream().toList();
     }
 
+    public List<Class<? extends StatisticCalculator>> getStatisticCalculators() {
+        return getInterfaceSubClasses(StatisticCalculator.class);
+    }
+
+    public List<Class<? extends ScoreCollector>> getScoreCollectors() {
+        return getInterfaceSubClasses(ScoreCollector.class);
+    }
+
     private <T> T getInstanceFromClass(Class<? extends T> tClass) {
         T instance = null;
         try {
@@ -51,9 +59,9 @@ public class StatisticsFacade {
     public List<StatisticsResult> calculateSchoolStatistics(StudentList studentList) {
         return new ArrayList<>(calculateSchoolStatistics(
                 studentList,
-                getInterfaceSubClasses(StatisticCalculator.class),
-                getInterfaceSubClasses(ScoreCollector.class))
-        );
+                getStatisticCalculators(),
+                getScoreCollectors()
+        ));
     }
 
     public List<StatisticsResult> calculateSchoolStatistics(
@@ -63,7 +71,7 @@ public class StatisticsFacade {
         return new ArrayList<>(calculateSchoolStatistics(
                 studentList,
                 Collections.singletonList(measurementMethod),
-                getInterfaceSubClasses(ScoreCollector.class))
-        );
+                getScoreCollectors()
+        ));
     }
 }

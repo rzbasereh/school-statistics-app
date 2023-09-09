@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class CSVExtractor {
-    public Map<String, Integer> getHeaderIndexMap(CSV csv) {
+    protected Map<String, Integer> getHeaderIndexMap(CSV csv) {
         HashMap<String, Integer> headerIndexMap = new HashMap<>();
         for (int i = 0; i < csv.getHeaders().size(); i++) {
             headerIndexMap.put(csv.getHeaders().get(i), i);
@@ -13,5 +13,5 @@ public abstract class CSVExtractor {
         return headerIndexMap;
     }
 
-    public abstract void extractFromCSV(CSV csv)  throws IOException;
+    public abstract void extract(CSV csv)  throws IOException;
 }

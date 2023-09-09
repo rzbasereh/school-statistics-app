@@ -12,7 +12,7 @@ public class StudentList extends CSVExtractor {
     private final List<Student> students = new ArrayList<>();
 
     @Override
-    public void extractFromCSV(CSV csv) throws IOException {
+    public void extract(CSV csv) throws IOException {
         Map<String, Integer> headerIndexMap = getHeaderIndexMap(csv);
         for (List<String> row : csv.getRows()) {
             String name = row.get(headerIndexMap.get("name"));
