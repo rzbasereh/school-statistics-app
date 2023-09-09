@@ -17,7 +17,7 @@ public class Printer {
         }
         StringBuilder formatBuilder = new StringBuilder();
         for (int maxLength : maxLengths) {
-            formatBuilder.append("|%-").append(maxLength + 2).append("s");
+            formatBuilder.append("%-").append(maxLength + 2).append("s");
         }
         String format = formatBuilder.toString();
 

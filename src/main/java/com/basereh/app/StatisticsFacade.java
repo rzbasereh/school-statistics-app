@@ -34,7 +34,7 @@ public class StatisticsFacade {
     }
 
     public List<StatisticsResult> calculateSchoolStatistics(
-            StudentList studentList,
+            List<Student> students,
             List<Class<? extends StatisticCalculator>> calculators,
             List<Class<? extends ScoreCollector>> targetCollectors
     ) {
@@ -42,7 +42,7 @@ public class StatisticsFacade {
 
         targetCollectors.forEach(targetCollector -> {
             ScoreCollector collector = getInstanceFromClass(targetCollector);
-            collector.collect(studentList.getStudents()).forEach((name, scores) -> {
+            collector.collect(students).forEach((name, scores) -> {
                 List<StatisticsMeasureResult> measures = new ArrayList<>();
                 calculators.forEach(calculator -> {
                     measures.add(new StatisticsMeasureResult(
@@ -56,20 +56,20 @@ public class StatisticsFacade {
         return results;
     }
 
-    public List<StatisticsResult> calculateSchoolStatistics(StudentList studentList) {
+    public List<StatisticsResult> calculateSchoolStatistics(List<Student> students) {
         return new ArrayList<>(calculateSchoolStatistics(
-                studentList,
+                students,
                 getStatisticCalculators(),
                 getScoreCollectors()
         ));
     }
 
     public List<StatisticsResult> calculateSchoolStatistics(
-            StudentList studentList,
+            List<Student> students,
             Class<? extends StatisticCalculator> measurementMethod
     ) {
         return new ArrayList<>(calculateSchoolStatistics(
-                studentList,
+                students,
                 Collections.singletonList(measurementMethod),
                 getScoreCollectors()
         ));

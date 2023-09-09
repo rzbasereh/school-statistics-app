@@ -39,25 +39,25 @@ public class CLI {
                         printer.print(csv);
                     }
                     case 2 -> {
-                        StudentList studentList = getStudentListFromFile();
-                        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(studentList);
+                        List<Student> students = getStudentsFromCSVFile();
+                        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(students);
                         printer.print(results);
                     }
                     case 3 -> {
-                        StudentList studentList = getStudentListFromFile();
+                        List<Student> students = getStudentsFromCSVFile();
                         Class<? extends StatisticCalculator> selectedCalculator = selectStatisticCalculator();
                         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
-                                studentList,
+                                students,
                                 selectedCalculator
                         );
                         printer.print(results);
                     }
                     case 4 -> {
-                        StudentList studentList = getStudentListFromFile();
+                        List<Student> students = getStudentsFromCSVFile();
                         Class<? extends StatisticCalculator> selectedCalculator = selectStatisticCalculator();
                         Class<? extends ScoreCollector> selectedCollector = selectScoreCollector();
                         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
-                                studentList,
+                                students,
                                 Collections.singletonList(selectedCalculator),
                                 Collections.singletonList(selectedCollector)
                         );
@@ -99,17 +99,18 @@ public class CLI {
         return lines;
     }
 
-    private StudentList getStudentListFromFile() {
+    private List<Student> getStudentsFromCSVFile() {
         System.out.print("Enter your file path: ");
         String filePath = scanner.next();
-        StudentList studentList = new StudentList();
+        CSVToStudentExtractor csvToStudentExtractor = new CSVToStudentExtractor();
+        List<Student> students = new ArrayList<>();
         try {
             CSV csv = csvParser.parseFile(filePath);
-            studentList.extract(csv);
+            students = csvToStudentExtractor.extract(csv);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        return studentList;
+        return students;
     }
 
     private Class<? extends StatisticCalculator> selectStatisticCalculator() throws Exception {

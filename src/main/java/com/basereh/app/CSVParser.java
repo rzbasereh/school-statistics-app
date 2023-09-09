@@ -21,8 +21,8 @@ public class CSVParser {
 
     public CSV parse(List<String> lines) throws IOException {
         Iterator<String> iterator = lines.iterator();
-        List<String> header = parseLine(iterator.next());
-        CSV csv = new CSV(header);
+        List<String> headers = parseLine(iterator.next());
+        CSV csv = new CSV(headers);
         while (iterator.hasNext()) {
             var line = iterator.next();
             csv.addRow(parseLine(line));

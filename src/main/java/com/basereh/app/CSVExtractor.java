@@ -1,10 +1,11 @@
 package com.basereh.app;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class CSVExtractor {
+public abstract class CSVExtractor<T> {
     protected Map<String, Integer> getHeaderIndexMap(CSV csv) {
         HashMap<String, Integer> headerIndexMap = new HashMap<>();
         for (int i = 0; i < csv.getHeaders().size(); i++) {
@@ -13,5 +14,5 @@ public abstract class CSVExtractor {
         return headerIndexMap;
     }
 
-    public abstract void extract(CSV csv)  throws IOException;
+    public abstract Collection<T> extract(CSV csv)  throws IOException;
 }

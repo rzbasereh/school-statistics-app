@@ -1,18 +1,14 @@
 package com.basereh.app;
 
-import lombok.Getter;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Getter
-public class StudentList extends CSVExtractor {
-    private final List<Student> students = new ArrayList<>();
-
+public class CSVToStudentExtractor extends CSVExtractor<Student> {
     @Override
-    public void extract(CSV csv) throws IOException {
+    public List<Student> extract(CSV csv) throws IOException {
+        List<Student> students = new ArrayList<>();
         Map<String, Integer> headerIndexMap = getHeaderIndexMap(csv);
         for (List<String> row : csv.getRows()) {
             String name = row.get(headerIndexMap.get("name"));
@@ -23,8 +19,8 @@ public class StudentList extends CSVExtractor {
             if (name == null || school == null || grade == null || className == null || score == null) {
                 throw new IOException("Invalid file format!");
             }
-            Student student = new Student(name, school, grade, className, Float.parseFloat(score));
-            students.add(student);
+            students.add(new Student(name, school, grade, className, Float.parseFloat(score)));
         }
+        return students;
     }
 }
