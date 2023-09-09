@@ -9,14 +9,9 @@ import java.util.List;
 
 public class StatisticsFacade {
 
-    public List<Class<? extends ScoreCollector>> getScoreCollectors() {
+    private <T> List<Class<? extends T>> getInterfaceSubClasses(Class<T> interfaceClass) {
         Reflections reflections = new Reflections("com.basereh.app");
-        return reflections.getSubTypesOf(ScoreCollector.class).stream().toList();
-    }
-
-    public List<Class<? extends StatisticCalculator>> getMeasurementMethods() {
-        Reflections reflections = new Reflections("com.basereh.app");
-        return reflections.getSubTypesOf(StatisticCalculator.class).stream().toList();
+        return reflections.getSubTypesOf(interfaceClass).stream().toList();
     }
 
     private <T> T getInstanceFromClass(Class<? extends T> tClass) {
@@ -54,10 +49,21 @@ public class StatisticsFacade {
     }
 
     public List<StatisticsResult> calculateSchoolStatistics(StudentList studentList) {
-        return new ArrayList<>(calculateSchoolStatistics(studentList, getMeasurementMethods(), getScoreCollectors()));
+        return new ArrayList<>(calculateSchoolStatistics(
+                studentList,
+                getInterfaceSubClasses(StatisticCalculator.class),
+                getInterfaceSubClasses(ScoreCollector.class))
+        );
     }
 
-    public List<StatisticsResult> calculateSchoolStatistics(StudentList studentList, Class<? extends StatisticCalculator> measurementMethod) {
-        return new ArrayList<>(calculateSchoolStatistics(studentList, Collections.singletonList(measurementMethod), getScoreCollectors()));
+    public List<StatisticsResult> calculateSchoolStatistics(
+            StudentList studentList,
+            Class<? extends StatisticCalculator> measurementMethod
+    ) {
+        return new ArrayList<>(calculateSchoolStatistics(
+                studentList,
+                Collections.singletonList(measurementMethod),
+                getInterfaceSubClasses(ScoreCollector.class))
+        );
     }
 }
