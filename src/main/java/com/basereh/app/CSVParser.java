@@ -1,7 +1,6 @@
 package com.basereh.app;
 
-import java.io.*;
-import java.lang.String;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -38,6 +37,8 @@ public class CSVParser {
     public CSV parseFile(String filePath) throws IOException {
         try (Stream<String> records = Files.lines(Path.of(filePath))) {
             return parse(records.toList());
+        } catch (IOException e) {
+            throw new IOException("File not found!");
         }
     }
 }
