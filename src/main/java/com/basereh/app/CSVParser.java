@@ -29,6 +29,7 @@ public class CSVParser {
         }
         return csv;
     }
+    
 
     public CSV parse(String formatedString) throws IOException {
         List<String> records = extractRows(formatedString);
