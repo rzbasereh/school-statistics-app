@@ -15,7 +15,7 @@ public class CLI {
 
     private final Printer printer;
 
-    public void run() {
+    public void mainLoop() {
         List<String> options = Arrays.asList(
                 "Parse CSV formatted string",
                 "Parse CSV formatted string (Typed by Enter)",

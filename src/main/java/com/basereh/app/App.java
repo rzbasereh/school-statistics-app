@@ -9,7 +9,7 @@ public class App {
         StatisticsFacade statisticsFacade = new StatisticsFacade();
         Printer printer = new Printer();
         CLI cli = new CLI(scanner, csvParser, statisticsFacade, printer);
-        cli.run();
+        cli.mainLoop();
         scanner.close();
     }
 }
