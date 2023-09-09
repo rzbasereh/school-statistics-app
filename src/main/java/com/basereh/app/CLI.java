@@ -7,18 +7,45 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class CLI {
+    private final Scanner scanner;
+
     private final CSVParser csvParser;
 
     private final StatisticsFacade statisticsFacade;
 
     private final Printer printer;
 
+    public void run() {
+        List<String> options = Arrays.asList(
+                "Parse CSV formatted string",
+                "Parse CSV formatted string (Typed by Enter)",
+                "School statistics",
+                "School statistics (choose a statistic measurement method)",
+                "School statistics (choose a statistic measurement method and type of statistic target)"
+        );
+
+        do {
+            clear();
+            try {
+                switch (selectOption("Please select one of these options:", options)) {
+                    case 0 -> CSVParserOption();
+                    case 1 -> CSVLineParserOption();
+                    case 2 -> calculateSchoolStatisticsOption();
+                    case 3 -> calculateSchoolStatisticsByMeasurementMethodOption();
+                    case 4 -> calculateSchoolStatisticsByMeasurementMethodAndStatisticTargetOption();
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } while (isContinue());
+    }
+
     private void clear() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
-    private int selectOption(Scanner scanner, String title, List<String> options) throws Exception {
+    private int selectOption(String title, List<String> options) throws Exception {
         System.out.println("\n" + title);
         for (int i = 0; i < options.size(); i++) {
             System.out.println("\t[" + (i + 1) + "] " + options.get(i));
@@ -31,7 +58,7 @@ public class CLI {
         return selectedOptionIndex;
     }
 
-    private void CSVParserOption(Scanner scanner) {
+    private void CSVParserOption() {
         String str = scanner.next();
         try {
             CSV csv = csvParser.parse(str);
@@ -41,7 +68,7 @@ public class CLI {
         }
     }
 
-    private void CSVLineParserOption(Scanner scanner) {
+    private void CSVLineParserOption() {
         System.out.print("Enter number of rows: ");
         int rowLength = scanner.nextInt();
 
@@ -58,7 +85,7 @@ public class CLI {
         }
     }
 
-    private StudentList getStudentListFromFile(Scanner scanner) {
+    private StudentList getStudentListFromFile() {
         System.out.print("Enter your file path: ");
         String filePath = scanner.next();
         StudentList studentList = new StudentList();
@@ -71,18 +98,17 @@ public class CLI {
         return studentList;
     }
 
-    private void calculateSchoolStatisticsOption(Scanner scanner) {
-        StudentList studentList = getStudentListFromFile(scanner);
+    private void calculateSchoolStatisticsOption() {
+        StudentList studentList = getStudentListFromFile();
         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(studentList);
         printer.print(results);
     }
 
-    private void calculateSchoolStatisticsByMeasurementMethodOption(Scanner scanner) throws Exception {
-        StudentList studentList = getStudentListFromFile(scanner);
+    private void calculateSchoolStatisticsByMeasurementMethodOption() throws Exception {
+        StudentList studentList = getStudentListFromFile();
 
         List<Class<? extends StatisticCalculator>> methods = statisticsFacade.getMeasurementMethods();
         int selectedMethodIndex = selectOption(
-                scanner,
                 "Please choose one of this methods:",
                 methods.stream().map(Class::getName).toList()
         );
@@ -94,19 +120,17 @@ public class CLI {
         printer.print(results);
     }
 
-    private void calculateSchoolStatisticsByMeasurementMethodAndStatisticTargetOption(Scanner scanner) throws Exception {
-        StudentList studentList = getStudentListFromFile(scanner);
+    private void calculateSchoolStatisticsByMeasurementMethodAndStatisticTargetOption() throws Exception {
+        StudentList studentList = getStudentListFromFile();
 
         List<Class<? extends StatisticCalculator>> methods = statisticsFacade.getMeasurementMethods();
         int selectedMethodIndex = selectOption(
-                scanner,
                 "Please choose one of this methods:",
                 methods.stream().map(Class::getName).toList()
         );
 
         List<Class<? extends ScoreCollector>> scoreCollectors = statisticsFacade.getScoreCollectors();
         int selectedTargetIndex = selectOption(
-                scanner,
                 "Please choose one of this targets:",
                 scoreCollectors.stream().map(Class::getName).toList()
         );
@@ -119,37 +143,9 @@ public class CLI {
         printer.print(results);
     }
 
-    private boolean isContinue(Scanner scanner) {
+    private boolean isContinue() {
         System.out.print("\nAre you want to continue (Y/n): ");
         String res = scanner.next();
         return !res.equals("n");
-    }
-
-    public void run() {
-        Scanner scanner = new Scanner(System.in).useDelimiter("\n");
-        List<String> options = Arrays.asList(
-                "Parse CSV formatted string",
-                "Parse CSV formatted string (Typed by Enter)",
-                "School statistics",
-                "School statistics (choose a statistic measurement method)",
-                "School statistics (choose a statistic measurement method and type of statistic target)"
-        );
-
-        do {
-            clear();
-            try {
-                switch (selectOption(scanner,"Please select one of these options:", options)) {
-                    case 0 -> CSVParserOption(scanner);
-                    case 1 -> CSVLineParserOption(scanner);
-                    case 2 -> calculateSchoolStatisticsOption(scanner);
-                    case 3 -> calculateSchoolStatisticsByMeasurementMethodOption(scanner);
-                    case 4 -> calculateSchoolStatisticsByMeasurementMethodAndStatisticTargetOption(scanner);
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } while (isContinue(scanner));
-
-        scanner.close();
     }
 }
