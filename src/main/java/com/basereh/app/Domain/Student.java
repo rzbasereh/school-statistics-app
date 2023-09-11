@@ -1,18 +1,19 @@
 package com.basereh.app.Domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+@Builder
 @Getter
 public class Student {
-    private final String name;
+    private String name;
 
-    private final String school;
+    private String school;
 
-    private final String grade;
+    private String grade;
 
-    private final String className;
+    private String className;
 
-    private final Float score;
+    private Float score;
 }

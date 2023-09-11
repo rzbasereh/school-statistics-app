@@ -23,7 +23,15 @@ public class CSVToStudentExtractor extends CSVExtractor<Student> {
             if (name == null || school == null || grade == null || className == null || score == null) {
                 throw new CLIException("Invalid file format!");
             }
-            students.add(new Student(name, school, grade, className, Float.parseFloat(score)));
+            students.add(
+                    Student.builder()
+                            .name(name)
+                            .school(school)
+                            .grade(grade)
+                            .className(className)
+                            .score(Float.parseFloat(score))
+                            .build()
+            );
         }
         return students;
     }
