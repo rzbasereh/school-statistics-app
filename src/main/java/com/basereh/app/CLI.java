@@ -121,10 +121,8 @@ public class CLI {
         System.out.print("Enter your file path: ");
         String filePath = scanner.next();
         CSVToStudentExtractor csvToStudentExtractor = new CSVToStudentExtractor();
-        List<Student> students = new ArrayList<>();
         CSV csv = csvParser.parseFile(filePath);
-        students = csvToStudentExtractor.extract(csv);
-        return students;
+        return csvToStudentExtractor.extract(csv);
     }
 
     private StatisticCalculator selectStatisticCalculator() throws CLIException {
