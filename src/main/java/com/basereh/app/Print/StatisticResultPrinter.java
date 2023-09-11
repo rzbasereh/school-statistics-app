@@ -1,6 +1,5 @@
 package com.basereh.app.Print;
 
-import com.basereh.app.StatisticTarget;
 import com.basereh.app.StatisticsResult;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class StatisticResultPrinter implements Printer<List<StatisticsResult>> {
     public void print(List<StatisticsResult> results) {
-        Map<StatisticTarget, List<StatisticsResult>> groupedResults = results.stream().collect(Collectors.groupingBy(StatisticsResult::getTarget));
+        Map<String, List<StatisticsResult>> groupedResults = results.stream().collect(Collectors.groupingBy(StatisticsResult::getTarget));
         groupedResults.forEach((statisticTarget, statisticsResults) -> {
             System.out.println("\n" + statisticTarget);
             statisticsResults.forEach(result -> {

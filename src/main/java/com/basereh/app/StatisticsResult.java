@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 public class StatisticsResult {
     private final String name;
-    private final StatisticTarget target;
+    private final String target;
     private final List<StatisticsMeasureResult> measures;
 }

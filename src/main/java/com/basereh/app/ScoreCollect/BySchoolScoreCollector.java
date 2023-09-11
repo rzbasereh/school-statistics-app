@@ -1,6 +1,5 @@
 package com.basereh.app.ScoreCollect;
 
-import com.basereh.app.StatisticTarget;
 import com.basereh.app.Student;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class BySchoolScoreCollector implements ScoreCollector {
     }
 
     @Override
-    public StatisticTarget getTarget() {
-        return StatisticTarget.SCHOOL;
+    public String getTarget() {
+        return "School";
     }
 }

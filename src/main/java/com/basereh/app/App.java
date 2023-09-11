@@ -1,7 +1,6 @@
 package com.basereh.app;
 
 import com.basereh.app.Print.CSVPrinter;
-import com.basereh.app.Print.Printer;
 import com.basereh.app.Print.StatisticResultPrinter;
 
 import java.util.Scanner;
