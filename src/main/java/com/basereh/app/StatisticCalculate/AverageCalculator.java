@@ -5,11 +5,7 @@ import java.util.List;
 public class AverageCalculator implements StatisticCalculator {
     @Override
     public Float apply(List<Float> nums) {
-        float sum = 0;
-        for (Float num : nums) {
-            sum += num;
-        }
-        return sum / nums.size();
+        return Float.parseFloat(nums.stream().mapToDouble(Float::doubleValue).average().toString());
     }
 
     @Override
