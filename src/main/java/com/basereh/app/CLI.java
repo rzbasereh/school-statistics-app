@@ -1,5 +1,9 @@
 package com.basereh.app;
 
+import com.basereh.app.Print.CSVPrinter;
+import com.basereh.app.Print.StatisticResultPrinter;
+import com.basereh.app.ScoreCollect.ScoreCollector;
+import com.basereh.app.StatisticCalculate.StatisticCalculator;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -13,7 +17,9 @@ public class CLI {
 
     private final StatisticsFacade statisticsFacade;
 
-    private final Printer printer;
+    private final CSVPrinter csvPrinter;
+
+    private final StatisticResultPrinter statisticResultPrinter;
 
     public void mainLoop() {
         List<String> options = Arrays.asList(
@@ -31,17 +37,17 @@ public class CLI {
                     case 0 -> {
                         String str = scanner.next();
                         CSV csv = csvParser.parse(str);
-                        printer.print(csv);
+                        csvPrinter.print(csv);
                     }
                     case 1 -> {
                         List<String> lines = readStringLineByLine();
                         CSV csv = csvParser.parse(lines);
-                        printer.print(csv);
+                        csvPrinter.print(csv);
                     }
                     case 2 -> {
                         List<Student> students = getStudentsFromCSVFile();
                         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(students);
-                        printer.print(results);
+                        statisticResultPrinter.print(results);
                     }
                     case 3 -> {
                         List<Student> students = getStudentsFromCSVFile();
@@ -50,7 +56,7 @@ public class CLI {
                                 students,
                                 selectedCalculator
                         );
-                        printer.print(results);
+                        statisticResultPrinter.print(results);
                     }
                     case 4 -> {
                         List<Student> students = getStudentsFromCSVFile();
@@ -61,7 +67,7 @@ public class CLI {
                                 Collections.singletonList(selectedCalculator),
                                 Collections.singletonList(selectedCollector)
                         );
-                        printer.print(results);
+                        statisticResultPrinter.print(results);
                     }
                 }
             } catch (Exception e) {

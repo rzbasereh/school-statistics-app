@@ -1,5 +1,7 @@
 package com.basereh.app;
 
+import com.basereh.app.ScoreCollect.ScoreCollector;
+import com.basereh.app.StatisticCalculate.StatisticCalculator;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;

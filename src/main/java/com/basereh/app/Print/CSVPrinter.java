@@ -1,9 +1,10 @@
-package com.basereh.app;
+package com.basereh.app.Print;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.basereh.app.CSV;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Printer {
+public class CSVPrinter implements Printer<CSV> {
     public void print(CSV csv) {
         int[] maxLengths = new int[csv.getHeaders().size()];
         List<List<String>> records = new ArrayList<>();
@@ -26,18 +27,5 @@ public class Printer {
             tableBuilder.append(String.format(format, record.toArray())).append("\n");
         }
         System.out.println(tableBuilder);
-    }
-
-    public void print(List<StatisticsResult> results) {
-        Map<StatisticTarget, List<StatisticsResult>> groupedResults = results.stream().collect(Collectors.groupingBy(StatisticsResult::getTarget));
-        groupedResults.forEach((statisticTarget, statisticsResults) -> {
-            System.out.println("\n" + statisticTarget);
-            statisticsResults.forEach(result -> {
-                System.out.println("\t" + result.getName());
-                result.getMeasures().forEach(measure -> {
-                    System.out.println("\t\t" + measure.getName() + ":" + measure.getValue());
-                });
-            });
-        });
     }
 }

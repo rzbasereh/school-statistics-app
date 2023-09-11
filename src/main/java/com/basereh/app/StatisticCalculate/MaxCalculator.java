@@ -1,4 +1,4 @@
-package com.basereh.app;
+package com.basereh.app.StatisticCalculate;
 
 import java.util.List;
 

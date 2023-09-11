@@ -1,4 +1,7 @@
-package com.basereh.app;
+package com.basereh.app.ScoreCollect;
+
+import com.basereh.app.StatisticTarget;
+import com.basereh.app.Student;
 
 import java.util.List;
 import java.util.Map;
