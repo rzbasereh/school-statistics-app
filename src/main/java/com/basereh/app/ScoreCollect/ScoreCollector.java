@@ -1,6 +1,6 @@
 package com.basereh.app.ScoreCollect;
 
-import com.basereh.app.Student;
+import com.basereh.app.Domain.Student;
 
 import java.util.List;
 import java.util.Map;

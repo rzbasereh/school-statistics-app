@@ -1,5 +1,9 @@
 package com.basereh.app;
 
+import com.basereh.app.CSVExtract.CSVToStudentExtractor;
+import com.basereh.app.Domain.CSV;
+import com.basereh.app.Domain.StatisticsResult;
+import com.basereh.app.Domain.Student;
 import com.basereh.app.Print.CSVPrinter;
 import com.basereh.app.Print.StatisticResultPrinter;
 import com.basereh.app.ScoreCollect.ScoreCollector;
@@ -14,6 +18,10 @@ public class CLI {
     private final Scanner scanner;
 
     private final CSVParser csvParser;
+
+    private final List<ScoreCollector> scoreCollectors;
+
+    private final List<StatisticCalculator> statisticCalculators;
 
     private final StatisticsFacade statisticsFacade;
 
@@ -46,22 +54,27 @@ public class CLI {
                     }
                     case 2 -> {
                         List<Student> students = getStudentsFromCSVFile();
-                        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(students);
+                        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
+                                students,
+                                statisticCalculators,
+                                scoreCollectors
+                        );
                         statisticResultPrinter.print(results);
                     }
                     case 3 -> {
                         List<Student> students = getStudentsFromCSVFile();
-                        Class<? extends StatisticCalculator> selectedCalculator = selectStatisticCalculator();
+                        StatisticCalculator selectedCalculator = selectStatisticCalculator();
                         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
                                 students,
-                                selectedCalculator
+                                Collections.singletonList(selectedCalculator),
+                                scoreCollectors
                         );
                         statisticResultPrinter.print(results);
                     }
                     case 4 -> {
                         List<Student> students = getStudentsFromCSVFile();
-                        Class<? extends StatisticCalculator> selectedCalculator = selectStatisticCalculator();
-                        Class<? extends ScoreCollector> selectedCollector = selectScoreCollector();
+                        StatisticCalculator selectedCalculator = selectStatisticCalculator();
+                        ScoreCollector selectedCollector = selectScoreCollector();
                         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
                                 students,
                                 Collections.singletonList(selectedCalculator),
@@ -119,22 +132,20 @@ public class CLI {
         return students;
     }
 
-    private Class<? extends StatisticCalculator> selectStatisticCalculator() throws Exception {
-        List<Class<? extends StatisticCalculator>> calculators = statisticsFacade.getStatisticCalculators();
+    private StatisticCalculator selectStatisticCalculator() throws Exception {
         int selectedOptionIndex = selectOption(
                 "Please choose one of this methods:",
-                calculators.stream().map(Class::getName).toList()
+                statisticCalculators.stream().map(StatisticCalculator::getName).toList()
         );
-        return calculators.get(selectedOptionIndex);
+        return statisticCalculators.get(selectedOptionIndex);
     }
 
-    private Class<? extends ScoreCollector> selectScoreCollector() throws Exception {
-        List<Class<? extends ScoreCollector>> collectors = statisticsFacade.getScoreCollectors();
+    private ScoreCollector selectScoreCollector() throws Exception {
         int selectedCollectorIndex = selectOption(
                 "Please choose one of this targets:",
-                collectors.stream().map(Class::getName).toList()
+                scoreCollectors.stream().map(ScoreCollector::getTarget).toList()
         );
-        return collectors.get(selectedCollectorIndex);
+        return scoreCollectors.get(selectedCollectorIndex);
     }
 
     private boolean isContinue() {

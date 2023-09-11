@@ -1,6 +1,6 @@
 package com.basereh.app.Print;
 
-import com.basereh.app.StatisticsResult;
+import com.basereh.app.Domain.StatisticsResult;
 
 import java.util.List;
 import java.util.Map;

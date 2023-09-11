@@ -1,4 +1,6 @@
-package com.basereh.app;
+package com.basereh.app.CSVExtract;
+
+import com.basereh.app.Domain.CSV;
 
 import java.io.IOException;
 import java.util.Collection;

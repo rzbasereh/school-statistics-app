@@ -1,4 +1,4 @@
-package com.basereh.app;
+package com.basereh.app.Domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
