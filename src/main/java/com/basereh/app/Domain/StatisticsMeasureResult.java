@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class StatisticsMeasureResult {
     private final String name;
-    private final float value;
+    private final Float value;
 }

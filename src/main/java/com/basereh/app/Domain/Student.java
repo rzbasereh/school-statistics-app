@@ -14,5 +14,5 @@ public class Student {
 
     private final String className;
 
-    private final float score;
+    private final Float score;
 }

@@ -4,9 +4,9 @@ import java.util.List;
 
 public class AverageCalculator implements StatisticCalculator {
     @Override
-    public float apply(List<Float> nums) {
+    public Float apply(List<Float> nums) {
         float sum = 0;
-        for (float num : nums) {
+        for (Float num : nums) {
             sum += num;
         }
         return sum / nums.size();
