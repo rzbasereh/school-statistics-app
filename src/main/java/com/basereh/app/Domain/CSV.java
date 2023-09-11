@@ -1,5 +1,6 @@
 package com.basereh.app.Domain;
 
+import com.basereh.app.CLIException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,9 +15,9 @@ public class CSV {
 
     private List<List<String>> rows = new ArrayList<>();
 
-    public void addRow(List<String> row) throws IOException {
+    public void addRow(List<String> row) throws CLIException {
         if (row.size() != headers.size()) {
-            throw new IOException("Invalid CSV format");
+            throw new CLIException("Invalid CSV format");
         }
         rows.add(row);
     }

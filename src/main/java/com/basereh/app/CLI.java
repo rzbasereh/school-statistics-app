@@ -10,7 +10,6 @@ import com.basereh.app.ScoreCollect.ScoreCollector;
 import com.basereh.app.StatisticCalculate.StatisticCalculator;
 import lombok.RequiredArgsConstructor;
 
-import java.io.IOException;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -83,7 +82,7 @@ public class CLI {
                         statisticResultPrinter.print(results);
                     }
                 }
-            } catch (Exception e) {
+            } catch (CLIException e) {
                 System.out.println(e.getMessage());
             }
         } while (isContinue());
@@ -94,7 +93,7 @@ public class CLI {
         System.out.flush();
     }
 
-    private int selectOption(String title, List<String> options) throws Exception {
+    private int selectOption(String title, List<String> options) throws CLIException {
         System.out.println("\n" + title);
         for (int i = 0; i < options.size(); i++) {
             System.out.println("\t[" + (i + 1) + "] " + options.get(i));
@@ -102,7 +101,7 @@ public class CLI {
 
         int selectedOptionIndex = scanner.nextInt() - 1;
         if (selectedOptionIndex < 0 || selectedOptionIndex >= options.size()) {
-            throw new Exception("Invalid option selected!");
+            throw new CLIException("Invalid option selected!");
         }
         return selectedOptionIndex;
     }
@@ -118,21 +117,17 @@ public class CLI {
         return lines;
     }
 
-    private List<Student> getStudentsFromCSVFile() {
+    private List<Student> getStudentsFromCSVFile() throws CLIException {
         System.out.print("Enter your file path: ");
         String filePath = scanner.next();
         CSVToStudentExtractor csvToStudentExtractor = new CSVToStudentExtractor();
         List<Student> students = new ArrayList<>();
-        try {
-            CSV csv = csvParser.parseFile(filePath);
-            students = csvToStudentExtractor.extract(csv);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        CSV csv = csvParser.parseFile(filePath);
+        students = csvToStudentExtractor.extract(csv);
         return students;
     }
 
-    private StatisticCalculator selectStatisticCalculator() throws Exception {
+    private StatisticCalculator selectStatisticCalculator() throws CLIException {
         int selectedOptionIndex = selectOption(
                 "Please choose one of this methods:",
                 statisticCalculators.stream().map(StatisticCalculator::getName).toList()
@@ -140,7 +135,7 @@ public class CLI {
         return statisticCalculators.get(selectedOptionIndex);
     }
 
-    private ScoreCollector selectScoreCollector() throws Exception {
+    private ScoreCollector selectScoreCollector() throws CLIException {
         int selectedCollectorIndex = selectOption(
                 "Please choose one of this targets:",
                 scoreCollectors.stream().map(ScoreCollector::getTarget).toList()
