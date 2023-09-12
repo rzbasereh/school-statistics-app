@@ -7,6 +7,7 @@ import com.basereh.app.ScoreCollect.ScoreCollector;
 import com.basereh.app.StatisticCalculate.StatisticCalculator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -56,8 +57,9 @@ public class StatisticsFacade {
             List<String> statisticCalculatorNames
     ) {
         return targetToScoreCollectors.keySet().stream()
-                .flatMap(target -> calculateSchoolStatistics(students, statisticCalculatorNames, target))
-                .toList();
+                .map(target -> calculateSchoolStatistics(students, statisticCalculatorNames, target))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public List<StatisticsResult> calculateSchoolStatistics(List<Student> students) {
