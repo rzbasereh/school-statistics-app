@@ -11,21 +11,19 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) throws Exception {
         try (Scanner scanner = new Scanner(System.in).useDelimiter("\n")) {
+             List<ScoreCollector> scoreCollectors = ReflectionUtil
+                    .getInstancesOf(ReflectionUtil.getSubTypesOf(ScoreCollector.class));
+            List<StatisticCalculator> statisticCalculators = ReflectionUtil
+                    .getInstancesOf(ReflectionUtil.getSubTypesOf(StatisticCalculator.class));
+
+            StatisticsFacade statisticsFacade = new StatisticsFacade(statisticCalculators, scoreCollectors);
             CSVParser csvParser = new CSVParser();
-            StatisticsFacade statisticsFacade = new StatisticsFacade();
             CSVPrinter csvPrinter = new CSVPrinter();
             StatisticResultPrinter statisticResultPrinter = new StatisticResultPrinter();
-            ReflectionUtil reflectionUtil = new ReflectionUtil();
-            List<ScoreCollector> scoreCollectors = reflectionUtil
-                    .getInstancesOf(reflectionUtil.getSubTypesOf(ScoreCollector.class));
-            List<StatisticCalculator> statisticCalculators = reflectionUtil
-                    .getInstancesOf(reflectionUtil.getSubTypesOf(StatisticCalculator.class));
 
             CLI cli = new CLI(
                     scanner,
                     csvParser,
-                    scoreCollectors,
-                    statisticCalculators,
                     statisticsFacade,
                     csvPrinter,
                     statisticResultPrinter

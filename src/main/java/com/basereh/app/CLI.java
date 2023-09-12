@@ -6,8 +6,6 @@ import com.basereh.app.Domain.StatisticsResult;
 import com.basereh.app.Domain.Student;
 import com.basereh.app.Print.CSVPrinter;
 import com.basereh.app.Print.StatisticResultPrinter;
-import com.basereh.app.ScoreCollect.ScoreCollector;
-import com.basereh.app.StatisticCalculate.StatisticCalculator;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
@@ -15,17 +13,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class CLI {
     private final Scanner scanner;
-
     private final CSVParser csvParser;
-
-    private final List<ScoreCollector> scoreCollectors;
-
-    private final List<StatisticCalculator> statisticCalculators;
-
     private final StatisticsFacade statisticsFacade;
-
     private final CSVPrinter csvPrinter;
-
     private final StatisticResultPrinter statisticResultPrinter;
 
     public void mainLoop() {
@@ -53,31 +43,26 @@ public class CLI {
                     }
                     case 2 -> {
                         List<Student> students = getStudentsFromCSVFile();
-                        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
-                                students,
-                                statisticCalculators,
-                                scoreCollectors
-                        );
+                        List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(students);
                         statisticResultPrinter.print(results);
                     }
                     case 3 -> {
                         List<Student> students = getStudentsFromCSVFile();
-                        StatisticCalculator selectedCalculator = selectStatisticCalculator();
+                        String selectedCalculatorName = selectStatisticCalculator();
                         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
                                 students,
-                                Collections.singletonList(selectedCalculator),
-                                scoreCollectors
+                                Collections.singletonList(selectedCalculatorName)
                         );
                         statisticResultPrinter.print(results);
                     }
                     case 4 -> {
                         List<Student> students = getStudentsFromCSVFile();
-                        StatisticCalculator selectedCalculator = selectStatisticCalculator();
-                        ScoreCollector selectedCollector = selectScoreCollector();
+                        String selectedCalculatorName = selectStatisticCalculator();
+                        String selectedCollectorTarget = selectScoreCollector();
                         List<StatisticsResult> results = statisticsFacade.calculateSchoolStatistics(
                                 students,
-                                Collections.singletonList(selectedCalculator),
-                                Collections.singletonList(selectedCollector)
+                                Collections.singletonList(selectedCalculatorName),
+                                selectedCollectorTarget
                         );
                         statisticResultPrinter.print(results);
                     }
@@ -127,20 +112,22 @@ public class CLI {
         return csvToStudentExtractor.extract(csv);
     }
 
-    private StatisticCalculator selectStatisticCalculator() throws SchoolStatisticsException {
+    private String selectStatisticCalculator() throws SchoolStatisticsException {
+        List<String> availableCalculators = statisticsFacade.getAvailableCalculators();
         int selectedOptionIndex = selectOption(
                 "Please choose one of this methods:",
-                statisticCalculators.stream().map(StatisticCalculator::getName).toList()
+                availableCalculators
         );
-        return statisticCalculators.get(selectedOptionIndex);
+        return availableCalculators.get(selectedOptionIndex);
     }
 
-    private ScoreCollector selectScoreCollector() throws SchoolStatisticsException {
+    private String selectScoreCollector() throws SchoolStatisticsException {
+        List<String> availableCollectors = statisticsFacade.getAvailableCollectors();
         int selectedCollectorIndex = selectOption(
-                "Please choose one of this targets:",
-                scoreCollectors.stream().map(ScoreCollector::getTarget).toList()
+          "Please choose one of this targets:",
+                availableCollectors
         );
-        return scoreCollectors.get(selectedCollectorIndex);
+        return availableCollectors.get(selectedCollectorIndex);
     }
 
     private boolean isContinue() {

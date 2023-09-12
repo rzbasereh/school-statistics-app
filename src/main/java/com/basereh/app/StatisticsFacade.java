@@ -6,44 +6,61 @@ import com.basereh.app.Domain.Student;
 import com.basereh.app.ScoreCollect.ScoreCollector;
 import com.basereh.app.StatisticCalculate.StatisticCalculator;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StatisticsFacade {
+    public Map<String ,StatisticCalculator> nameToStatisticCalculators;
+    public Map<String ,ScoreCollector> targetToScoreCollectors;
+
+    public StatisticsFacade(List<StatisticCalculator> statisticCalculators, List<ScoreCollector> scoreCollectors) {
+        nameToStatisticCalculators = statisticCalculators.stream().collect(Collectors.toMap(StatisticCalculator::getName, Function.identity()));
+        targetToScoreCollectors = scoreCollectors.stream().collect(Collectors.toMap(ScoreCollector::getTarget, Function.identity()));
+    }
+
+    public List<String> getAvailableCalculators() {
+        return new ArrayList<>(nameToStatisticCalculators.keySet());
+    }
+
+    public List<String> getAvailableCollectors() {
+        return new ArrayList<>(targetToScoreCollectors.keySet());
+    }
+
     public List<StatisticsResult> calculateSchoolStatistics(
             List<Student> students,
-            List<StatisticCalculator> statisticCalculators,
-            List<ScoreCollector> scoreCollectors
+            List<String> statisticCalculatorNames,
+            String collectorTarget
     ) {
-        return scoreCollectors.stream().flatMap(scoreCollector ->
-                scoreCollector.collect(students).keySet().stream().map(name ->
+        ScoreCollector scoreCollector = targetToScoreCollectors.get(collectorTarget);
+        List<StatisticCalculator> statisticCalculators = statisticCalculatorNames.stream().map(nameToStatisticCalculators::get).toList();
+
+        return scoreCollector.collect(students).entrySet().stream().map(collectorEntry ->
                         new StatisticsResult(
-                                name,
+                                collectorEntry.getKey(),
                                 scoreCollector.getTarget(),
                                 statisticCalculators.stream().map(statisticCalculator ->
                                         new StatisticsMeasureResult(
                                                 statisticCalculator.getName(),
-                                                statisticCalculator.apply(scoreCollector.collect(students).get(name))
+                                                statisticCalculator.apply(collectorEntry.getValue())
                                         )
                                 ).toList()
                         )
-                )
-        ).toList();
+                ).toList();
+    }
 
+    public List<StatisticsResult> calculateSchoolStatistics(
+            List<Student> students,
+            List<String> statisticCalculatorNames
+    ) {
+        return targetToScoreCollectors.keySet().stream()
+                .flatMap(target -> calculateSchoolStatistics(students, statisticCalculatorNames, target))
+                .toList();
+    }
 
-//        List<StatisticsResult> results = new ArrayList<>();
-//
-//        scoreCollectors.forEach(scoreCollector -> {
-//
-//            scoreCollector.collect(students).forEach((name, scores) -> {
-//
-//                List<StatisticsMeasureResult> measures = statisticCalculators.stream().map(statisticCalculator ->
-//                        new StatisticsMeasureResult(statisticCalculator.getName(), statisticCalculator.apply(scores))
-//                ).toList();
-//                results.add(new StatisticsResult(name, scoreCollector.getTarget(), measures));
-//
-//            });
-//
-//        });
-//        return results;
+    public List<StatisticsResult> calculateSchoolStatistics(List<Student> students) {
+        return calculateSchoolStatistics(students, new ArrayList<>(nameToStatisticCalculators.keySet()));
     }
 }
