@@ -1,6 +1,6 @@
 package com.basereh.app.CSVExtract;
 
-import com.basereh.app.CLIException;
+import com.basereh.app.SchoolStatisticsException;
 import com.basereh.app.Domain.CSV;
 
 import java.io.IOException;
@@ -17,5 +17,5 @@ public abstract class CSVExtractor<T> {
         return headerIndexMap;
     }
 
-    public abstract Collection<T> extract(CSV csv) throws IOException, CLIException;
+    public abstract Collection<T> extract(CSV csv) throws IOException, SchoolStatisticsException;
 }

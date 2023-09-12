@@ -20,7 +20,7 @@ public class CSVParser {
         return Arrays.asList(formatedString.split(";"));
     }
 
-    public CSV parse(List<String> lines) throws CLIException {
+    public CSV parse(List<String> lines) throws SchoolStatisticsException {
         Iterator<String> iterator = lines.iterator();
         List<String> headers = parseLine(iterator.next());
         CSV csv = new CSV(headers);
@@ -31,16 +31,16 @@ public class CSVParser {
         return csv;
     }
 
-    public CSV parse(String formatedString) throws CLIException {
+    public CSV parse(String formatedString) throws SchoolStatisticsException {
         List<String> records = extractRows(formatedString);
         return parse(records);
     }
 
-    public CSV parseFile(String filePath) throws CLIException {
+    public CSV parseFile(String filePath) throws SchoolStatisticsException {
         try (Stream<String> records = Files.lines(Path.of(filePath))) {
             return parse(records.toList());
         } catch (IOException e) {
-            throw new CLIException("File not found!");
+            throw new SchoolStatisticsException("File not found!");
         }
     }
 }

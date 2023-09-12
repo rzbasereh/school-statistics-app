@@ -82,8 +82,10 @@ public class CLI {
                         statisticResultPrinter.print(results);
                     }
                 }
-            } catch (CLIException e) {
+            } catch (SchoolStatisticsException e) {
                 System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Some error occurred!");
             }
         } while (isContinue());
     }
@@ -93,7 +95,7 @@ public class CLI {
         System.out.flush();
     }
 
-    private int selectOption(String title, List<String> options) throws CLIException {
+    private int selectOption(String title, List<String> options) throws SchoolStatisticsException {
         System.out.println("\n" + title);
         for (int i = 0; i < options.size(); i++) {
             System.out.println("\t[" + (i + 1) + "] " + options.get(i));
@@ -101,7 +103,7 @@ public class CLI {
 
         int selectedOptionIndex = scanner.nextInt() - 1;
         if (selectedOptionIndex < 0 || selectedOptionIndex >= options.size()) {
-            throw new CLIException("Invalid option selected!");
+            throw new SchoolStatisticsException("Invalid option selected!");
         }
         return selectedOptionIndex;
     }
@@ -117,7 +119,7 @@ public class CLI {
         return lines;
     }
 
-    private List<Student> getStudentsFromCSVFile() throws CLIException {
+    private List<Student> getStudentsFromCSVFile() throws SchoolStatisticsException {
         System.out.print("Enter your file path: ");
         String filePath = scanner.next();
         CSVToStudentExtractor csvToStudentExtractor = new CSVToStudentExtractor();
@@ -125,7 +127,7 @@ public class CLI {
         return csvToStudentExtractor.extract(csv);
     }
 
-    private StatisticCalculator selectStatisticCalculator() throws CLIException {
+    private StatisticCalculator selectStatisticCalculator() throws SchoolStatisticsException {
         int selectedOptionIndex = selectOption(
                 "Please choose one of this methods:",
                 statisticCalculators.stream().map(StatisticCalculator::getName).toList()
@@ -133,7 +135,7 @@ public class CLI {
         return statisticCalculators.get(selectedOptionIndex);
     }
 
-    private ScoreCollector selectScoreCollector() throws CLIException {
+    private ScoreCollector selectScoreCollector() throws SchoolStatisticsException {
         int selectedCollectorIndex = selectOption(
                 "Please choose one of this targets:",
                 scoreCollectors.stream().map(ScoreCollector::getTarget).toList()
